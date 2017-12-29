@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    *{
+        margin:0;
+        padding:0;
+        list-style: none;
+        box-sizing: border-box;
+        text-decoration: none;
+    }
+    .box{
+        width:600px;
+        height:30px;
+        margin:20px auto;
+        display: flex;
+        justify-content: space-between;
+    }
+    .box a{
+        height: 100%;
+        text-align: center;
+        line-height: 30px;
+        color:#0cbbee;
+        display: inline-block;
+        font-size:16px;
+    }
+    .content{
+        width:600px;
+        height: 50px;
+        line-height: 50px;
+        margin:10px auto;
+    }
+    .enter{
+        transform: translate(100%,0);
+    }
+    .enter-active{
+        transition: all 1s ease;
+    }
+    .enter-to{
+        transform: translate(0,0);
+    }
+    .leave{
+        transform: translate(0,0);
+    }
+    .leave-active{
+        transition: all 1s ease;
+    }
+    .leave-to{
+        transform: translate(-100%,0);
+    }
+</style>
+<body>
+    <ul class="box">
+        <a href="router.html#router">首页</a>
+        <a href="router.html#info">公司简介</a>
+        <a href="router.html#shop">商品简介</a>
+    </ul>
+    <div class="content">
+        首页的内容
+    </div>
+    <script>
+        var links=document.querySelectorAll('a');
+        for(var i=0;i<links.length;i++){
+            links[i].onclick=function(e){
+                var hash=this.getAttribute("href");
+                hash=hash.substr(hash.lastIndexOf("#")+1);
+                var box=document.querySelector('.content');
+                var ajax=new XMLHttpRequest();
+                ajax.onload=function(){
+                    if(url!=="router.html"){
+                        var box1=document.body.appendChild(box.cloneNode(true));
+                        box1.innerHTML=ajax.response;
+                        addclass(box1,'enter');
+                        addclass(box1,'enter-active');
+                        addclass(box,'leave');
+                        addclass(box,'leave-active');
+                        setTimeout(function(){
+                            delclass(box1,'enter');
+                            addclass(box1,'enter-to');
+                            delclass(box,'leave');
+                            addclass(box,'leave-to');
+                        },100)
+                    }else{
+                        box.innerHTML="首页的内容";
+                    }
+                    box.addEventListener('webkitTransitionEnd',function(){
+                        document.body.removeChild(box);
+                        delclass(box1,'enter-active');
+                        delclass(box1,'enter-to');
+                    })
+                }
+                var url=hash+".html";
+                ajax.open('get',url);
+                ajax.send();
+//                return false;
+            }
+        }
+        function addclass(obj,classname) {
+//            obj.classList.add(classname)
+        var calsses=obj.className.split(/\s+/);
+        calsses.push(classname);
+        obj.className=calsses.join(" ")
+        }
+        function delclass(obj,classname) {
+//            obj.classList.remove(classname)
+        var calsses=obj.className.split(/\s+/);
+            calsses=calsses.filter(ele=> {
+            return ele!=classname;
+        });
+        obj.className=calsses.join(" ")
+        }
+    </script>
+</body>
+</html>
